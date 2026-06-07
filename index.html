@@ -1506,7 +1506,7 @@
       --baseDim: rgba(255,255,255,.235) !important;
       --fillStrong: rgba(255,255,255,.995) !important;
     }
-    /* smooth-fill-no-false-start */
+        /* final-fill-and-bg-balance */
     .line:not(.active) .main .segment{
       --baseDim: rgba(255,255,255,.125) !important;
       --fillStrong: rgba(255,255,255,.125) !important;
@@ -1523,13 +1523,16 @@
     }
 
     .line.active .main .segment{
-      --baseDim: rgba(255,255,255,.205) !important;
-      --fillStrong: rgba(255,255,255,.205) !important;
+      --baseDim: rgba(255,255,255,.20) !important;
+      --fillStrong: rgba(255,255,255,.985) !important;
+      --edge: clamp(7px, calc(var(--feather,.5) * 17px), 21px) !important;
       text-shadow:none !important;
       filter:none !important;
     }
 
     .line.active .main .segment:not(.live):not(.done){
+      --baseDim: rgba(255,255,255,.20) !important;
+      --fillStrong: rgba(255,255,255,.20) !important;
       background:
         linear-gradient(90deg,
           var(--baseDim) 0%,
@@ -1541,35 +1544,25 @@
     }
 
     .line.active .main .segment.live{
-      --baseDim: rgba(255,255,255,.205) !important;
-      --fillStrong: rgba(
-        255,
-        255,
-        255,
-        calc(.205 + (var(--p,0) * .785) + (var(--boost,0) * .025))
-      ) !important;
-      --edge: clamp(7px, calc(var(--feather,.5) * 18px), 23px) !important;
+      --baseDim: rgba(255,255,255,.20) !important;
+      --fillStrong: rgba(255,255,255,.985) !important;
       background:
         linear-gradient(90deg,
           var(--fillStrong) 0%,
           var(--fillStrong) max(0px, calc(var(--p,0) * 100% - var(--edge))),
-          color-mix(in srgb, var(--fillStrong) 58%, var(--baseDim)) calc(var(--p,0) * 100%),
+          color-mix(in srgb, var(--fillStrong) 48%, var(--baseDim)) calc(var(--p,0) * 100%),
           var(--baseDim) min(100%, calc(var(--p,0) * 100% + var(--edge))),
           var(--baseDim) 100%) !important;
       -webkit-background-clip:text !important;
       background-clip:text !important;
       -webkit-text-fill-color:transparent !important;
       text-fill-color:transparent !important;
-      filter:drop-shadow(0 1px 1.2px rgba(0,0,0,calc(.08 + var(--p,0) * .10))) !important;
-      text-shadow:
-        0 1px 1.4px rgba(0,0,0,calc(.06 + var(--p,0) * .08)),
-        0 0 calc(var(--boost,0) * 12px * var(--p,0)) rgba(255,255,255,.16) !important;
+      filter:drop-shadow(0 1px 1.1px rgba(0,0,0,.12)) !important;
     }
 
     .line.active .main .segment.done{
-      --baseDim: rgba(255,255,255,.235) !important;
-      --fillStrong: rgba(255,255,255,.995) !important;
-      --edge: clamp(7px, calc(var(--feather,.5) * 18px), 23px) !important;
+      --baseDim: rgba(255,255,255,.20) !important;
+      --fillStrong: rgba(255,255,255,.985) !important;
       background:
         linear-gradient(90deg,
           var(--fillStrong) 0%,
@@ -1578,10 +1571,18 @@
       background-clip:text !important;
       -webkit-text-fill-color:transparent !important;
       text-fill-color:transparent !important;
-      filter:drop-shadow(0 1px 1.35px rgba(0,0,0,.16)) brightness(1.02) !important;
-      text-shadow:
-        0 1px 1.5px rgba(0,0,0,.10),
-        0 0 calc(var(--boost,0) * 12px) rgba(255,255,255,.16) !important;
+      filter:drop-shadow(0 1px 1.2px rgba(0,0,0,.14)) !important;
+    }
+
+    .line.active .bgline{
+      opacity:.54 !important;
+    }
+
+    .line.active .bgline .segment{
+      --baseDim: rgba(255,255,255,.115) !important;
+      --fillStrong: rgba(255,255,255,calc(.36 + var(--boost,0) * .08)) !important;
+      filter:none !important;
+      text-shadow:none !important;
     }
 </style>
   <meta property="og:title" content="Syncly">
@@ -2235,9 +2236,9 @@
         return;
       }
       const dur = Math.max(.001, e-b);
-      const lead = Math.min(.045, dur*.12);
+      const lead = 0;
       const tail = Math.min(.075, dur*.18);
-      const raw = (t - (b - lead)) / (dur + lead + tail);
+      const raw = (t - b) / (dur + tail);
       const p = Math.max(0, Math.min(1, raw));
       const eased = p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2) / 2;
       s.style.setProperty('--p', eased.toFixed(3));
