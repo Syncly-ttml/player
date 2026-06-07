@@ -1481,62 +1481,6 @@
       text-align:right !important;
     }
 
-        /* Syncly final: stronger readable karaoke fill */
-    .segment{
-      --edge: clamp(3px, calc(var(--feather,.5) * 9px), 11px) !important;
-    }
-
-    .line.active .segment{
-      --baseDim: rgba(255,255,255,.30) !important;
-      --fillStrong: rgba(255,255,255,1) !important;
-      --edge: clamp(3px, calc(var(--feather,.5) * 9px), 11px) !important;
-      filter:
-        contrast(1.22)
-        drop-shadow(0 1px 2px rgba(0,0,0,.22)) !important;
-    }
-
-    .line.active .segment.done{
-      --baseDim: rgba(255,255,255,1) !important;
-      --fillStrong: rgba(255,255,255,1) !important;
-      filter:
-        brightness(1.04)
-        contrast(1.18)
-        drop-shadow(0 1px 2px rgba(0,0,0,.20)) !important;
-    }
-
-    .line.active .segment.live{
-      --baseDim: rgba(255,255,255,.28) !important;
-      --fillStrong: rgba(255,255,255,1) !important;
-      filter:
-        brightness(1.06)
-        contrast(1.25)
-        drop-shadow(0 1px 2px rgba(0,0,0,.22)) !important;
-    }
-
-    .line:not(.active) .segment{
-      --baseDim: rgba(255,255,255,.16) !important;
-      --fillStrong: rgba(255,255,255,.34) !important;
-      filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.10)) !important;
-    }
-
-    .bgline .segment{
-      --baseDim: rgba(255,255,255,.14) !important;
-      --fillStrong: rgba(255,255,255,.42) !important;
-      --edge: clamp(3px, calc(var(--feather,.5) * 8px), 10px) !important;
-    }
-
-    .line.active .bgline .segment{
-      --baseDim: rgba(255,255,255,.18) !important;
-      --fillStrong: rgba(255,255,255,.58) !important;
-      --edge: clamp(3px, calc(var(--feather,.5) * 8px), 10px) !important;
-      filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.14)) !important;
-    }
-
-    .line.active .bgline .segment.done{
-      --baseDim: rgba(255,255,255,.58) !important;
-      --fillStrong: rgba(255,255,255,.58) !important;
-    }
-    
 </style>
   <meta property="og:title" content="Syncly">
   <meta property="og:description" content="Apple Music-like TTML lyrics previewer">
@@ -2169,47 +2113,42 @@
   }
   function updateFillForLine(lineEl, t, line){
     const spans = [...lineEl.querySelectorAll('.segment')];
-
-    spans.forEach((s)=>{
+    spans.forEach((s, i)=>{
       s.classList.remove('live','done');
-
-      const b = parseTime(s.dataset.begin);
-      const e = parseTime(s.dataset.end);
-
+      const b = parseTime(s.dataset.begin), e = parseTime(s.dataset.end);
       if(!beatMode || b == null || e == null || e <= b){
-        const lb = line.begin ?? 0;
-        const le = line.end ?? lb + 1;
-        const p = Math.max(0, Math.min(1, (t - lb) / Math.max(.001, le - lb)));
-
-        s.style.setProperty('--p', p.toFixed(3));
-
+        const lb = line.begin ?? 0, le = line.end ?? lb + 1;
+        const p = Math.max(0, Math.min(1, (t-lb)/Math.max(.001, le-lb)));
+        const eased = easeOutCubic(p);
+        s.style.setProperty('--p', eased.toFixed(3));
         const baseBoost = parseFloat(s.dataset.boostBase || '0') || 0;
-        s.style.setProperty('--boost', (baseBoost * p).toFixed(3));
-        s.style.setProperty('--lift', '0');
-
-        if(p >= 1) s.classList.add('done');
-        else if(p > 0) s.classList.add('live');
-
+        const liftPx = parseFloat(s.dataset.liftPx || '0') || 0;
+        s.style.setProperty('--boost', (baseBoost * eased).toFixed(3));
+        s.style.setProperty('--lift', (liftPx * liftCurve(p)).toFixed(3));
+        if(p>=1){
+          s.classList.add('done');
+          s.style.setProperty('--lift', '0');
+        }
+        else if(p>0) s.classList.add('live');
         return;
       }
-
-      const dur = Math.max(.001, e - b);
-
-      // Strict linear progress: no lead, no tail, no easing.
-      // This keeps the visual fill locked to the TTML timestamps.
-      const p = Math.max(0, Math.min(1, (t - b) / dur));
-
-      s.style.setProperty('--p', p.toFixed(3));
-
+      const dur = Math.max(.001, e-b);
+      const lead = Math.min(.045, dur*.12);
+      const tail = Math.min(.075, dur*.18);
+      const raw = (t - (b - lead)) / (dur + lead + tail);
+      const p = Math.max(0, Math.min(1, raw));
+      const eased = p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2) / 2;
+      s.style.setProperty('--p', eased.toFixed(3));
       const baseBoost = parseFloat(s.dataset.boostBase || '0') || 0;
-      s.style.setProperty('--boost', (baseBoost * p).toFixed(3));
-      s.style.setProperty('--lift', '0');
-
-      if(t >= e){
+      const liftPx = parseFloat(s.dataset.liftPx || '0') || 0;
+      const activeBoost = baseBoost * Math.min(1, Math.max(0, eased * 1.15));
+      s.style.setProperty('--boost', activeBoost.toFixed(3));
+      s.style.setProperty('--lift', (liftPx * liftCurve(p)).toFixed(3));
+      if(t >= e + tail){
         s.classList.add('done');
-      }else if(t >= b && t < e){
-        s.classList.add('live');
+        s.style.setProperty('--lift', '0');
       }
+      else if(t >= b - lead && t <= e + tail) s.classList.add('live');
     });
   }
   function tick(){
