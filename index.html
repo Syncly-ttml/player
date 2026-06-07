@@ -1506,7 +1506,7 @@
       --baseDim: rgba(255,255,255,.235) !important;
       --fillStrong: rgba(255,255,255,.995) !important;
     }
-        /* remove-false-word-start-glow */
+    /* smooth-fill-no-false-start */
     .line:not(.active) .main .segment{
       --baseDim: rgba(255,255,255,.125) !important;
       --fillStrong: rgba(255,255,255,.125) !important;
@@ -1522,9 +1522,14 @@
       filter:none !important;
     }
 
-    .line.active .main .segment:not(.live):not(.done){
+    .line.active .main .segment{
       --baseDim: rgba(255,255,255,.205) !important;
       --fillStrong: rgba(255,255,255,.205) !important;
+      text-shadow:none !important;
+      filter:none !important;
+    }
+
+    .line.active .main .segment:not(.live):not(.done){
       background:
         linear-gradient(90deg,
           var(--baseDim) 0%,
@@ -1533,17 +1538,50 @@
       background-clip:text !important;
       -webkit-text-fill-color:transparent !important;
       text-fill-color:transparent !important;
-      text-shadow:none !important;
+    }
+
+    .line.active .main .segment.live{
+      --baseDim: rgba(255,255,255,.205) !important;
+      --fillStrong: rgba(
+        255,
+        255,
+        255,
+        calc(.205 + (var(--p,0) * .785) + (var(--boost,0) * .025))
+      ) !important;
+      --edge: clamp(7px, calc(var(--feather,.5) * 18px), 23px) !important;
+      background:
+        linear-gradient(90deg,
+          var(--fillStrong) 0%,
+          var(--fillStrong) max(0px, calc(var(--p,0) * 100% - var(--edge))),
+          color-mix(in srgb, var(--fillStrong) 58%, var(--baseDim)) calc(var(--p,0) * 100%),
+          var(--baseDim) min(100%, calc(var(--p,0) * 100% + var(--edge))),
+          var(--baseDim) 100%) !important;
+      -webkit-background-clip:text !important;
+      background-clip:text !important;
+      -webkit-text-fill-color:transparent !important;
+      text-fill-color:transparent !important;
+      filter:drop-shadow(0 1px 1.2px rgba(0,0,0,calc(.08 + var(--p,0) * .10))) !important;
+      text-shadow:
+        0 1px 1.4px rgba(0,0,0,calc(.06 + var(--p,0) * .08)),
+        0 0 calc(var(--boost,0) * 12px * var(--p,0)) rgba(255,255,255,.16) !important;
     }
 
     .line.active .main .segment.done{
       --baseDim: rgba(255,255,255,.235) !important;
       --fillStrong: rgba(255,255,255,.995) !important;
-    }
-
-    .line.active .main .segment.live{
-      --baseDim: rgba(255,255,255,.235) !important;
-      --fillStrong: rgba(255,255,255,calc(.99 + var(--boost,0) * .01)) !important;
+      --edge: clamp(7px, calc(var(--feather,.5) * 18px), 23px) !important;
+      background:
+        linear-gradient(90deg,
+          var(--fillStrong) 0%,
+          var(--fillStrong) 100%) !important;
+      -webkit-background-clip:text !important;
+      background-clip:text !important;
+      -webkit-text-fill-color:transparent !important;
+      text-fill-color:transparent !important;
+      filter:drop-shadow(0 1px 1.35px rgba(0,0,0,.16)) brightness(1.02) !important;
+      text-shadow:
+        0 1px 1.5px rgba(0,0,0,.10),
+        0 0 calc(var(--boost,0) * 12px) rgba(255,255,255,.16) !important;
     }
 </style>
   <meta property="og:title" content="Syncly">
