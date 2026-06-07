@@ -1506,6 +1506,45 @@
       --baseDim: rgba(255,255,255,.235) !important;
       --fillStrong: rgba(255,255,255,.995) !important;
     }
+        /* remove-false-word-start-glow */
+    .line:not(.active) .main .segment{
+      --baseDim: rgba(255,255,255,.125) !important;
+      --fillStrong: rgba(255,255,255,.125) !important;
+      background:
+        linear-gradient(90deg,
+          var(--baseDim) 0%,
+          var(--baseDim) 100%) !important;
+      -webkit-background-clip:text !important;
+      background-clip:text !important;
+      -webkit-text-fill-color:transparent !important;
+      text-fill-color:transparent !important;
+      text-shadow:none !important;
+      filter:none !important;
+    }
+
+    .line.active .main .segment:not(.live):not(.done){
+      --baseDim: rgba(255,255,255,.205) !important;
+      --fillStrong: rgba(255,255,255,.205) !important;
+      background:
+        linear-gradient(90deg,
+          var(--baseDim) 0%,
+          var(--baseDim) 100%) !important;
+      -webkit-background-clip:text !important;
+      background-clip:text !important;
+      -webkit-text-fill-color:transparent !important;
+      text-fill-color:transparent !important;
+      text-shadow:none !important;
+    }
+
+    .line.active .main .segment.done{
+      --baseDim: rgba(255,255,255,.235) !important;
+      --fillStrong: rgba(255,255,255,.995) !important;
+    }
+
+    .line.active .main .segment.live{
+      --baseDim: rgba(255,255,255,.235) !important;
+      --fillStrong: rgba(255,255,255,calc(.99 + var(--boost,0) * .01)) !important;
+    }
 </style>
   <meta property="og:title" content="Syncly">
   <meta property="og:description" content="Apple Music-like TTML lyrics previewer">
