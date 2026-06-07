@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Syncly — 404</title>
+  <meta name="application-name" content="Syncly">
+  <meta name="apple-mobile-web-app-title" content="Syncly">
+  <meta name="theme-color" content="#050605">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%228%22%20y1%3D%228%22%20x2%3D%2256%22%20y2%3D%2256%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%3Cstop%20stop-color%3D%22%23f4f1ff%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22.42%22%20stop-color%3D%22%23b7ff5a%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2335d06f%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22glow%22%20x%3D%22-60%25%22%20y%3D%22-60%25%22%20width%3D%22220%25%22%20height%3D%22220%25%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation%3D%222.2%22%20result%3D%22b%22%2F%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%3CfeMergeNode%20in%3D%22b%22%2F%3E%3CfeMergeNode%20in%3D%22SourceGraphic%22%2F%3E%3C%2FfeMerge%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%23070807%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M17%2042c5%205%2024%206%2028-1%203-6-4-9-13-10-8-1-15-3-14-9%201-7%2020-9%2029-2%22%20fill%3D%22none%22%20stroke%3D%22url%28%23g%29%22%20stroke-width%3D%226.5%22%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23glow%29%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2249%22%20cy%3D%2219%22%20r%3D%223%22%20fill%3D%22%23b7ff5a%22%2F%3E%0A%3C%2Fsvg%3E">
+  <style>
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 28% 20%, rgba(183,255,90,.22), transparent 34%),
+        radial-gradient(circle at 78% 70%, rgba(53,208,111,.20), transparent 38%),
+        linear-gradient(160deg,#050605,#11170d 46%,#020302);
+      color:white;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+    }
+    .orb{
+      position:fixed;
+      inset:-22%;
+      background:
+        radial-gradient(circle at 40% 30%, rgba(183,255,90,.30), transparent 24%),
+        radial-gradient(circle at 68% 64%, rgba(53,208,111,.22), transparent 30%);
+      filter:blur(70px) saturate(1.35);
+      pointer-events:none;
+    }
+    .card{
+      width:min(420px,calc(100vw - 34px));
+      min-height:540px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start;
+      gap:18px;
+      padding:38px;
+      border-radius:32px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.035)),
+        linear-gradient(160deg,rgba(45,67,31,.72),rgba(5,7,5,.86));
+      box-shadow:0 28px 90px rgba(0,0,0,.48), inset 0 0 0 1px rgba(255,255,255,.12);
+      backdrop-filter:blur(24px);
+      -webkit-backdrop-filter:blur(24px);
+      position:relative;
+      z-index:2;
+    }
+    .logo{
+      width:76px;
+      height:76px;
+      border-radius:20px;
+      display:grid;
+      place-items:center;
+      background:#070807;
+      box-shadow:0 16px 44px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.12);
+      overflow:hidden;
+    }
+    .logo svg{width:76px;height:76px}
+    .code{
+      font-size:18px;
+      font-weight:780;
+      color:rgba(255,255,255,.52);
+      letter-spacing:-.02em;
+    }
+    h1{
+      margin:0;
+      max-width:330px;
+      font-size:56px;
+      line-height:.96;
+      letter-spacing:-.06em;
+      font-weight:820;
+    }
+    p{
+      margin:0;
+      max-width:320px;
+      font-size:17px;
+      line-height:1.35;
+      font-weight:570;
+      letter-spacing:-.02em;
+      color:rgba(255,255,255,.62);
+    }
+    a{
+      margin-top:10px;
+      height:48px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 18px;
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      color:#070807;
+      text-decoration:none;
+      font-weight:820;
+      letter-spacing:-.025em;
+      box-shadow:0 18px 46px rgba(255,255,255,.09);
+      transition:transform 160ms cubic-bezier(.22,1,.36,1), background 160ms ease;
+    }
+    a:hover{transform:scale(1.035);background:white}
+    a:active{transform:scale(.97)}
+  </style>
+</head>
+<body>
+  <div class="orb"></div>
+  <main class="card">
+    <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f4f1ff"/>
+      <stop offset=".42" stop-color="#b7ff5a"/>
+      <stop offset="1" stop-color="#35d06f"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#070807"/>
+  <path d="M17 42c5 5 24 6 28-1 3-6-4-9-13-10-8-1-15-3-14-9 1-7 20-9 29-2" fill="none" stroke="url(#g)" stroke-width="6.5" stroke-linecap="round" filter="url(#glow)"/>
+  <circle cx="49" cy="19" r="3" fill="#b7ff5a"/>
+</svg></div>
+    <div class="code">404</div>
+    <h1>Page not found</h1>
+    <p>This Syncly page does not exist. Go back to the TTML player and keep checking the lyrics.</p>
+    <a href="/player/">Back to Syncly</a>
+  </main>
+</body>
+</html>
