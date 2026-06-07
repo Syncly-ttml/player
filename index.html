@@ -1480,7 +1480,32 @@
     .line.agent-right .segment{
       text-align:right !important;
     }
+    /* lyric-fill-contrast-final */
+    .line .main .segment{
+      --baseDim: rgba(255,255,255,.18) !important;
+      --fillStrong: rgba(255,255,255,calc(.96 + var(--boost,0) * .04)) !important;
+      --edge: clamp(7px, calc(var(--feather,.5) * 18px), 23px) !important;
+      filter:drop-shadow(0 1px 1.2px rgba(0,0,0,.10)) !important;
+    }
 
+    .line.active .main .segment{
+      --baseDim: rgba(255,255,255,.235) !important;
+      --fillStrong: rgba(255,255,255,calc(.99 + var(--boost,0) * .01)) !important;
+      --edge: clamp(7px, calc(var(--feather,.5) * 18px), 23px) !important;
+      filter:drop-shadow(0 1px 1.35px rgba(0,0,0,.18)) brightness(1.035) !important;
+      text-shadow:
+        0 1px 1.6px rgba(0,0,0,.12),
+        0 0 calc(var(--boost,0) * 14px) rgba(255,255,255,.18) !important;
+    }
+
+    .line.active .main .segment.live{
+      filter:drop-shadow(0 1px 1.45px rgba(0,0,0,.20)) brightness(calc(1.045 + var(--boost,0) * .06)) !important;
+    }
+
+    .line.active .main .segment.done{
+      --baseDim: rgba(255,255,255,.235) !important;
+      --fillStrong: rgba(255,255,255,.995) !important;
+    }
 </style>
   <meta property="og:title" content="Syncly">
   <meta property="og:description" content="Apple Music-like TTML lyrics previewer">
