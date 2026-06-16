@@ -1451,6 +1451,17 @@
       margin-bottom:23px !important;
     }
 
+
+    /* Syncly: keep split word fragments together */
+    .wordGroup{
+      display:inline-block;
+      white-space:nowrap;
+      vertical-align:baseline;
+    }
+    .wordGroup .segment{
+      vertical-align:baseline;
+    }
+
 </style>
   <meta property="og:title" content="Syncly">
   <meta property="og:description" content="Apple Music-like TTML lyrics previewer">
@@ -1869,12 +1880,7 @@
   }
 
   function renderSegments(parent, segs, className='segment'){
-    segs.forEach((seg, idx)=>{
-      if(seg.spacer || seg.text === ' '){
-        parent.appendChild(document.createTextNode(' '));
-        return;
-      }
-
+    function createSegment(seg, idx){
       const span = document.createElement('span');
       span.className = className;
       span.textContent = seg.text;
@@ -1891,9 +1897,7 @@
       // Visual intensity for long split/stretched word parts.
       const boost = Math.max(0, Math.min(1, ((touchesPrev || touchesNext) ? dur - .42 : dur - .72) / 1.15));
 
-      // Apple Music-like "word lift":
-      // fast words barely move; long sustained parts float up a little and return by end.
-      // Split word parts get a bit more movement because Apple visually emphasizes held syllables.
+      // Word lift is disabled by later CSS/JS, but keep the dataset for compatibility.
       const liftBase = Math.max(0, Math.min(1, ((touchesPrev || touchesNext) ? dur - .32 : dur - .58) / 1.25));
       const liftPx = ((touchesPrev || touchesNext) ? 9.0 : 6.2) * liftBase;
 
@@ -1903,8 +1907,44 @@
       span.style.setProperty('--lift', '0');
       span.style.setProperty('--p', '0');
 
-      parent.appendChild(span);
-    });
+      return span;
+    }
+
+    function shouldGlue(a, b){
+      if(!a || !b) return false;
+      if(a.spacer || b.spacer) return false;
+      if(a.text === ' ' || b.text === ' ') return false;
+      return isWordLike(a.text) && isWordLike(b.text);
+    }
+
+    for(let idx = 0; idx < segs.length; idx++){
+      const seg = segs[idx];
+
+      if(seg.spacer || seg.text === ' '){
+        parent.appendChild(document.createTextNode(' '));
+        continue;
+      }
+
+      // If adjacent timed spans are word-like with no spacer between them,
+      // they are pieces of the same word, e.g. Br + eaking.
+      // Wrap them so the browser never line-breaks between the fragments.
+      if(shouldGlue(seg, segs[idx + 1])){
+        const group = document.createElement('span');
+        group.className = 'wordGroup';
+
+        group.appendChild(createSegment(seg, idx));
+
+        while(idx + 1 < segs.length && shouldGlue(segs[idx], segs[idx + 1])){
+          idx++;
+          group.appendChild(createSegment(segs[idx], idx));
+        }
+
+        parent.appendChild(group);
+        continue;
+      }
+
+      parent.appendChild(createSegment(seg, idx));
+    }
   }
 
   function render(){
