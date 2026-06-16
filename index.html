@@ -2087,6 +2087,30 @@
     return ans;
   }
 
+  function activeLineIndexesAt(t, primaryIdx=-1){
+    const activeIndexes = [];
+
+    for(let i=0; i<lines.length; i++){
+      const line = lines[i];
+
+      // Overlap logic uses the real TTML line timing.
+      // If two <p> ranges overlap, both lines become active at the same time.
+      const b = line.begin ?? line.switchIn ?? 0;
+      const e = line.end ?? line.switchOut ?? (lines[i + 1]?.begin ?? Infinity);
+
+      if(b != null && e != null && t >= b && t < e){
+        activeIndexes.push(i);
+      }
+    }
+
+    // During gaps or before exact begin, keep the old single-line preview behavior.
+    if(!activeIndexes.length && primaryIdx >= 0){
+      activeIndexes.push(primaryIdx);
+    }
+
+    return activeIndexes;
+  }
+
   function easeOutCubic(x){ return 1 - Math.pow(1-x, 3); }
   function liftCurve(p){
     p = Math.max(0, Math.min(1, p));
@@ -2151,20 +2175,35 @@
     barFill.style.width = d ? `${Math.max(0,Math.min(100,t/d*100))}%` : '0%';
 
     const idx = activeLineAt(t);
-    if(idx !== active){
-      active = idx;
+    const activeIndexes = activeLineIndexesAt(t, idx);
+    const activeSet = new Set(activeIndexes);
+    const stateKey = `${idx}|${activeIndexes.join(',')}`;
+
+    if(stateKey !== active){
+      active = stateKey;
+
+      const lastActive = activeIndexes.length ? activeIndexes[activeIndexes.length - 1] : idx;
+
       [...lyricsEl.children].forEach((el,i)=>{
-        el.classList.toggle('active', i===idx);
-        el.classList.toggle('past', i<idx);
-        el.classList.toggle('future', i>idx+2);
-        el.classList.toggle('near', i===idx+1 || i===idx+2);
+        const isActive = activeSet.has(i);
+        el.classList.toggle('active', isActive);
+        el.classList.toggle('past', !isActive && i < idx);
+        el.classList.toggle('future', !isActive && i > lastActive + 2);
+        el.classList.toggle('near', !isActive && (i === lastActive + 1 || i === lastActive + 2));
       });
+
       if(autoScroll && idx >= 0){
         setTargetScroll(idx);
       }
     }
-    // Keep fill stable after scroll/seek: update active and nearby lines only.
-    for(let k = Math.max(0, idx - 1); k <= Math.min(lines.length - 1, idx + 2); k++){
+
+    // Update every active overlapped line plus nearby lines.
+    const minActive = activeIndexes.length ? Math.min(...activeIndexes) : idx;
+    const maxActive = activeIndexes.length ? Math.max(...activeIndexes) : idx;
+    const from = Math.max(0, Math.min(idx, minActive) - 1);
+    const to = Math.min(lines.length - 1, Math.max(idx, maxActive) + 2);
+
+    for(let k = from; k <= to; k++){
       const el = lyricsEl.children[k];
       if(el && lines[k]) updateFillForLine(el, t, lines[k]);
     }
@@ -2578,20 +2617,34 @@
     barFill.style.width = `${Math.max(0, Math.min(100, ratio * 100))}%`;
 
     const idx = activeLineAt(clamped);
-    if(idx !== active){
-      active = idx;
+    const activeIndexes = activeLineIndexesAt(clamped, idx);
+    const activeSet = new Set(activeIndexes);
+    const stateKey = `${idx}|${activeIndexes.join(',')}`;
+
+    if(stateKey !== active){
+      active = stateKey;
+
+      const lastActive = activeIndexes.length ? activeIndexes[activeIndexes.length - 1] : idx;
+
       [...lyricsEl.children].forEach((el,i)=>{
-        el.classList.toggle('active', i===idx);
-        el.classList.toggle('past', i<idx);
-        el.classList.toggle('future', i>idx+2);
-        el.classList.toggle('near', i===idx+1 || i===idx+2);
+        const isActive = activeSet.has(i);
+        el.classList.toggle('active', isActive);
+        el.classList.toggle('past', !isActive && i < idx);
+        el.classList.toggle('future', !isActive && i > lastActive + 2);
+        el.classList.toggle('near', !isActive && (i === lastActive + 1 || i === lastActive + 2));
       });
+
       if(autoScroll && idx >= 0){
         setTargetScroll(idx);
       }
     }
 
-    for(let k = Math.max(0, idx - 1); k <= Math.min(lines.length - 1, idx + 2); k++){
+    const minActive = activeIndexes.length ? Math.min(...activeIndexes) : idx;
+    const maxActive = activeIndexes.length ? Math.max(...activeIndexes) : idx;
+    const from = Math.max(0, Math.min(idx, minActive) - 1);
+    const to = Math.min(lines.length - 1, Math.max(idx, maxActive) + 2);
+
+    for(let k = from; k <= to; k++){
       const el = lyricsEl.children[k];
       if(el && lines[k]) updateFillForLine(el, clamped, lines[k]);
     }
