@@ -3,13 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Syncly</title>
-  <link rel="icon" type="image/png" href="./favicon.png">
-  <link rel="shortcut icon" href="./favicon.ico">
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-  <meta name="application-name" content="Syncly">
-  <meta name="theme-color" content="#000000">
-
+  <title>Apple Music-like TTML Lyrics Previewer</title>
   <style>
     :root{
       --c1:#3d7d02;
@@ -1451,40 +1445,7 @@
       margin-bottom:23px !important;
     }
 
-
-    /* agent-side-alignment */
-    .line.agent-left{
-      text-align:left !important;
-      transform-origin:left center !important;
-    }
-
-    .line.agent-right{
-      text-align:right !important;
-      transform-origin:right center !important;
-    }
-
-    .line.agent-left .main,
-    .line.agent-left .bgline,
-    .line.agent-left .aux{
-      text-align:left !important;
-      justify-self:stretch !important;
-    }
-
-    .line.agent-right .main,
-    .line.agent-right .bgline,
-    .line.agent-right .aux{
-      text-align:right !important;
-      justify-self:stretch !important;
-    }
-
-    .line.agent-right .segment{
-      text-align:right !important;
-    }
-
 </style>
-  <meta property="og:title" content="Syncly">
-  <meta property="og:description" content="Apple Music-like TTML lyrics previewer">
-  <meta property="og:image" content="./apple-touch-icon.png">
 </head>
 <body class="prestart">
   <div class="ambient"></div>
@@ -1767,25 +1728,6 @@
     return map;
   }
 
-
-  function lyricAgentInfo(raw){
-    const value = String(raw || '').trim();
-    if(!value) return {raw:'', number:null, side:'left'};
-
-    // TTML can be "v2", "#v2", "voice2", or sometimes a space-separated list.
-    const first = value.split(/\s+/)[0].replace(/^#/, '');
-    const match = first.match(/^(?:v|voice)([1-8])$/i);
-
-    if(!match) return {raw:value, number:null, side:'left'};
-
-    const number = Number(match[1]);
-    return {
-      raw:value,
-      number,
-      side:number % 2 === 0 ? 'right' : 'left'
-    };
-  }
-
   function parseTTML(text){
     const parser = new DOMParser();
     let doc = parser.parseFromString(text, 'application/xml');
@@ -1807,7 +1749,6 @@
     const ps = [...doc.getElementsByTagName('*')].filter(e => e.localName === 'p');
     const parsed = ps.map((p,i) => {
       const key = attr(p,'itunes:key') || p.getAttribute('id') || `L${i+1}`;
-      const agentInfo = lyricAgentInfo(attr(p,'ttm:agent') || attr(p,'agent'));
       const begin = parseTime(p.getAttribute('begin'));
       let end = parseTime(p.getAttribute('end'));
 
@@ -1866,9 +1807,6 @@
       }
       return {
         key,
-        agent:agentInfo.raw,
-        agentNumber:agentInfo.number,
-        side:agentInfo.side,
         begin,
         end,
         text:textPlain.replace(/\s+/g,' ').trim(),
@@ -1964,11 +1902,8 @@
     lyricsEl.innerHTML = '';
     lines.forEach((line, idx)=>{
       const div = document.createElement('div');
-      const side = line.side === 'right' ? 'right' : 'left';
-      div.className = `line future agent-${side}${line.agentNumber ? ` agent-v${line.agentNumber}` : ''}`;
+      div.className = 'line future';
       div.dataset.idx = idx;
-      div.dataset.agent = line.agent || '';
-      div.dataset.side = side;
 
       for(const bg of (line.topBg || [])){
         const b = document.createElement('span');
@@ -2111,7 +2046,7 @@
     if(p < 0.72) return 1;
     return Math.pow(1 - (p - 0.72) / 0.28, 2);
   }
-    function updateFillForLine(lineEl, t, line){
+  function updateFillForLine(lineEl, t, line){
     const spans = [...lineEl.querySelectorAll('.segment')];
 
     spans.forEach((s)=>{
@@ -2159,6 +2094,7 @@
       }
     });
   }
+  function tick(){
     const t = audio.currentTime || 0;
     const d = audio.duration || 0;
     nowEl.textContent = fmtNow(t);
