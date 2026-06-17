@@ -1462,6 +1462,239 @@
       vertical-align:baseline;
     }
 
+
+    /* Syncly desktop preview mode */
+    .deckButtons{
+      grid-template-columns:repeat(5, 1fr) !important;
+    }
+
+    body.desktopView .shell{
+      width:min(100vw, 1680px) !important;
+      max-width:none !important;
+      padding:22px !important;
+      gap:14px !important;
+    }
+
+    body.desktopView .phone{
+      width:min(calc(100vw - 44px), calc((100vh - 132px) * 16 / 9), 1580px) !important;
+      max-width:none !important;
+      height:auto !important;
+      max-height:calc(100vh - 132px) !important;
+      min-height:0 !important;
+      aspect-ratio:16 / 9 !important;
+      border-radius:0 !important;
+      padding:0 !important;
+      display:block !important;
+      overflow:hidden !important;
+      background:
+        radial-gradient(circle at 20% 72%, color-mix(in srgb, var(--c1) 52%, transparent), transparent 30%),
+        radial-gradient(circle at 44% 18%, color-mix(in srgb, var(--c2) 46%, transparent), transparent 30%),
+        radial-gradient(circle at 75% 55%, color-mix(in srgb, var(--c3) 55%, transparent), transparent 38%),
+        linear-gradient(145deg, color-mix(in srgb, var(--c1) 22%, #050505), color-mix(in srgb, var(--c2) 26%, #050505) 46%, #030303) !important;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.07) inset,
+        0 34px 120px rgba(0,0,0,.52) !important;
+    }
+
+    body.desktopView .phone::before{
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.04), rgba(0,0,0,.28) 48%, rgba(0,0,0,.50)),
+        radial-gradient(circle at 18% 80%, rgba(255,255,255,.15), transparent 24%),
+        radial-gradient(circle at 34% 20%, rgba(255,255,255,.08), transparent 28%) !important;
+      backdrop-filter:blur(22px) saturate(1.04) !important;
+      -webkit-backdrop-filter:blur(22px) saturate(1.04) !important;
+      z-index:-1 !important;
+    }
+
+    body.desktopView .trackHead{
+      position:absolute !important;
+      left:12.2% !important;
+      top:9.2% !important;
+      right:auto !important;
+      width:min(32%, 500px) !important;
+      height:auto !important;
+      display:block !important;
+      z-index:8 !important;
+    }
+
+    body.desktopView .cover{
+      display:block !important;
+      width:min(32vw, 430px) !important;
+      max-width:100% !important;
+      height:auto !important;
+      aspect-ratio:1 / 1 !important;
+      border-radius:8px !important;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.20) inset,
+        0 24px 70px rgba(0,0,0,.46) !important;
+    }
+
+    body.desktopView .song{
+      margin-top:16px !important;
+      width:100% !important;
+    }
+
+    body.desktopView .songTitle{
+      font-size:18px !important;
+      line-height:1.08 !important;
+      font-weight:840 !important;
+      letter-spacing:-.025em !important;
+      color:rgba(255,255,255,.94) !important;
+    }
+
+    body.desktopView .artist{
+      margin-top:4px !important;
+      font-size:17px !important;
+      line-height:1.08 !important;
+      font-weight:720 !important;
+      letter-spacing:-.025em !important;
+      color:rgba(255,255,255,.64) !important;
+    }
+
+    body.desktopView .lyricsArea{
+      position:absolute !important;
+      left:50.5% !important;
+      right:8.5% !important;
+      top:13.5% !important;
+      bottom:10.5% !important;
+      width:auto !important;
+      height:auto !important;
+      min-height:0 !important;
+      overflow:hidden !important;
+      mask-image:linear-gradient(to bottom, transparent 0%, black 13%, black 76%, transparent 100%) !important;
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 13%, black 76%, transparent 100%) !important;
+      z-index:6 !important;
+    }
+
+    body.desktopView .lyricsScroller{
+      height:100% !important;
+      padding:150px 0 360px !important;
+      overflow-y:auto !important;
+      overflow-x:visible !important;
+      text-align:left !important;
+    }
+
+    body.desktopView .line{
+      font-size:44px !important;
+      line-height:1.11 !important;
+      letter-spacing:-.034em !important;
+      font-weight:820 !important;
+      margin-bottom:44px !important;
+      max-width:760px !important;
+      opacity:.16 !important;
+      text-align:left !important;
+      transform-origin:left center !important;
+    }
+
+    body.desktopView .line.active{
+      opacity:1 !important;
+    }
+
+    body.desktopView .line.near{
+      opacity:.24 !important;
+    }
+
+    body.desktopView .line.past{
+      opacity:.10 !important;
+    }
+
+    body.desktopView .line.future{
+      opacity:.12 !important;
+    }
+
+    body.desktopView .line .main,
+    body.desktopView .bgline{
+      text-align:left !important;
+    }
+
+    body.desktopView .bgline{
+      font-size:.56em !important;
+      line-height:1.05 !important;
+    }
+
+    body.desktopView .player{
+      position:absolute !important;
+      left:12.2% !important;
+      right:auto !important;
+      bottom:13.3% !important;
+      width:min(32%, 500px) !important;
+      z-index:9 !important;
+    }
+
+    body.desktopView .times{
+      font-size:12px !important;
+      color:rgba(255,255,255,.70) !important;
+      margin-bottom:8px !important;
+    }
+
+    body.desktopView .bar{
+      height:4px !important;
+      background:rgba(255,255,255,.26) !important;
+    }
+
+    body.desktopView .barFill{
+      background:rgba(255,255,255,.92) !important;
+    }
+
+    body.desktopView .controlDeck{
+      width:min(calc(100vw - 44px), 720px) !important;
+    }
+
+    body.desktopView .deckBtn.active{
+      background:rgba(255,255,255,.28) !important;
+    }
+
+    @media (max-width:840px){
+      body.desktopView .shell{
+        width:100vw !important;
+        height:100vh !important;
+        padding:10px !important;
+        justify-content:center !important;
+      }
+
+      body.desktopView .phone{
+        width:calc(100vw - 20px) !important;
+        max-height:calc(100vh - 166px) !important;
+        aspect-ratio:16 / 9 !important;
+      }
+
+      body.desktopView .trackHead{
+        left:7% !important;
+        top:10% !important;
+        width:34% !important;
+      }
+
+      body.desktopView .lyricsArea{
+        left:48% !important;
+        right:6% !important;
+        top:10% !important;
+        bottom:10% !important;
+      }
+
+      body.desktopView .lyricsScroller{
+        padding:42px 0 150px !important;
+      }
+
+      body.desktopView .line{
+        font-size:24px !important;
+        margin-bottom:24px !important;
+      }
+
+      body.desktopView .songTitle{
+        font-size:12px !important;
+      }
+
+      body.desktopView .artist{
+        font-size:11px !important;
+      }
+
+      body.desktopView .player{
+        left:7% !important;
+        bottom:10% !important;
+        width:34% !important;
+      }
+    }
+
 </style>
   <meta property="og:title" content="Syncly">
   <meta property="og:description" content="Apple Music-like TTML lyrics previewer">
@@ -1516,6 +1749,7 @@
 
       <div class="deckButtons">
         <button id="playBtn" class="deckBtn" type="button">Play</button>
+        <button id="displayBtn" class="deckBtn" type="button">Desktop</button>
         <button id="ttmlBtn" class="deckBtn" type="button">TTML</button>
         <button id="audioBtn" class="deckBtn" type="button">Audio</button>
         <button id="coverBtn" class="deckBtn" type="button">Artwork</button>
@@ -1542,7 +1776,7 @@
   const nowEl = $('#now'), leftEl = $('#left'), bar = $('#bar'), barFill = $('#barFill');
   const lineCount = $('#lineCount'), segCount = $('#segCount'), bgCount = $('#bgCount'), issuesEl = $('#issues');
   const side = $('#side');
-  const ttmlBtn = $('#ttmlBtn'), audioBtn = $('#audioBtn'), coverBtn = $('#coverBtn'), errorToast = $('#errorToast');
+  const ttmlBtn = $('#ttmlBtn'), audioBtn = $('#audioBtn'), coverBtn = $('#coverBtn'), displayBtn = $('#displayBtn'), errorToast = $('#errorToast');
   const startOverlay = $('#startOverlay'), startFlowBtn = $('#startFlowBtn'), startHint = $('#startHint'), startFlowInput = $('#startFlowInput');
   const flowTtmlInput = $('#flowTtmlInput'), flowAudioInput = $('#flowAudioInput'), flowCoverInput = $('#flowCoverInput');
 
@@ -2462,6 +2696,35 @@
       return;
     }
   });
+
+
+    let desktopView = false;
+
+    function applyDisplayMode(){
+      document.body.classList.toggle('desktopView', desktopView);
+
+      if(displayBtn){
+        displayBtn.classList.toggle('active', desktopView);
+        displayBtn.textContent = desktopView ? 'Phone' : 'Desktop';
+      }
+
+      requestAnimationFrame(()=>{
+        active = -1;
+        const t = audio.currentTime || 0;
+        const idx = activeLineAt(t);
+        if(idx >= 0){
+          setTargetScroll(idx);
+          currentScrollTop = targetScrollTop;
+          lyricsEl.scrollTop = currentScrollTop;
+        }
+      });
+    }
+
+    displayBtn?.addEventListener('click', ()=>{
+      playClickSound();
+      desktopView = !desktopView;
+      applyDisplayMode();
+    });
 
     ttmlBtn?.addEventListener('click', ()=>ttmlInput.click());
     audioBtn?.addEventListener('click', ()=>audioInput.click());
