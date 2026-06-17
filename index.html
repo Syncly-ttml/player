@@ -1695,6 +1695,76 @@
       }
     }
 
+
+    /* Syncly smooth display mode transition */
+    .phone{
+      transform-origin:center center;
+    }
+
+    body.switchingDisplay .phone{
+      opacity:.16 !important;
+      transform:translate3d(0,18px,0) scale(.965) !important;
+      filter:blur(18px) saturate(.92) !important;
+      pointer-events:none !important;
+      transition:
+        opacity 260ms ease,
+        transform 260ms cubic-bezier(.22,1,.36,1),
+        filter 260ms ease !important;
+    }
+
+    body:not(.switchingDisplay) .phone{
+      transition:
+        width 720ms cubic-bezier(.16,1,.3,1),
+        height 720ms cubic-bezier(.16,1,.3,1),
+        max-height 720ms cubic-bezier(.16,1,.3,1),
+        aspect-ratio 720ms cubic-bezier(.16,1,.3,1),
+        border-radius 720ms cubic-bezier(.16,1,.3,1),
+        padding 720ms cubic-bezier(.16,1,.3,1),
+        background 900ms cubic-bezier(.2,.8,.2,1),
+        box-shadow 500ms ease,
+        opacity 520ms ease,
+        transform 520ms cubic-bezier(.22,1,.36,1),
+        filter 520ms ease !important;
+    }
+
+    body.switchingDisplay .controlDeck{
+      opacity:.38 !important;
+      filter:blur(6px) !important;
+      transform:translate3d(0,8px,0) scale(.985) !important;
+      pointer-events:none !important;
+      transition:
+        opacity 260ms ease,
+        transform 260ms cubic-bezier(.22,1,.36,1),
+        filter 260ms ease !important;
+    }
+
+    body.desktopView .trackHead,
+    body.desktopView .lyricsArea,
+    body.desktopView .player,
+    body.desktopView .cover,
+    body.desktopView .song{
+      transition:
+        left 720ms cubic-bezier(.16,1,.3,1),
+        right 720ms cubic-bezier(.16,1,.3,1),
+        top 720ms cubic-bezier(.16,1,.3,1),
+        bottom 720ms cubic-bezier(.16,1,.3,1),
+        width 720ms cubic-bezier(.16,1,.3,1),
+        height 720ms cubic-bezier(.16,1,.3,1),
+        margin 720ms cubic-bezier(.16,1,.3,1),
+        opacity 520ms ease,
+        transform 520ms cubic-bezier(.22,1,.36,1),
+        filter 520ms ease !important;
+    }
+
+    .deckBtn{
+      position:relative;
+      z-index:20;
+    }
+
+    #displayBtn{
+      pointer-events:auto !important;
+    }
+
 </style>
   <meta property="og:title" content="Syncly">
   <meta property="og:description" content="Apple Music-like TTML lyrics previewer">
@@ -2696,36 +2766,6 @@
       return;
     }
   });
-
-
-    let desktopView = false;
-
-    function applyDisplayMode(){
-      document.body.classList.toggle('desktopView', desktopView);
-
-      if(displayBtn){
-        displayBtn.classList.toggle('active', desktopView);
-        displayBtn.textContent = desktopView ? 'Phone' : 'Desktop';
-      }
-
-      requestAnimationFrame(()=>{
-        active = -1;
-        const t = audio.currentTime || 0;
-        const idx = activeLineAt(t);
-        if(idx >= 0){
-          setTargetScroll(idx);
-          currentScrollTop = targetScrollTop;
-          lyricsEl.scrollTop = currentScrollTop;
-        }
-      });
-    }
-
-    displayBtn?.addEventListener('click', ()=>{
-      playClickSound();
-      desktopView = !desktopView;
-      applyDisplayMode();
-    });
-
     ttmlBtn?.addEventListener('click', ()=>ttmlInput.click());
     audioBtn?.addEventListener('click', ()=>audioInput.click());
     coverBtn?.addEventListener('click', ()=>coverInput.click());
@@ -3054,6 +3094,67 @@
   coverView.removeAttribute('src');
   setLoadStep('start');
   loop();
+
+  // Robust Phone/Desktop switcher. Kept near the end so all functions already exist.
+  let __synclyDesktopView = false;
+  let __synclyDisplayLock = false;
+
+  function __synclyApplyDisplayModeSmooth(){
+    const btn = document.getElementById('displayBtn');
+    if(__synclyDisplayLock) return;
+
+    __synclyDisplayLock = true;
+    document.body.classList.add('switchingDisplay');
+
+    setTimeout(()=>{
+      document.body.classList.toggle('desktopView', __synclyDesktopView);
+
+      if(btn){
+        btn.classList.toggle('active', __synclyDesktopView);
+        btn.textContent = __synclyDesktopView ? 'Phone' : 'Desktop';
+      }
+
+      requestAnimationFrame(()=>{
+        active = -1;
+        const t = audio.currentTime || 0;
+        const idx = activeLineAt(t);
+
+        if(idx >= 0){
+          setTargetScroll(idx);
+          currentScrollTop = targetScrollTop;
+          lyricsEl.scrollTop = currentScrollTop;
+        }
+
+        requestAnimationFrame(()=>{
+          document.body.classList.remove('switchingDisplay');
+          setTimeout(()=>{ __synclyDisplayLock = false; }, 180);
+        });
+      });
+    }, 230);
+  }
+
+  function __synclyBindDisplayButton(){
+    const btn = document.getElementById('displayBtn');
+    if(!btn || btn.dataset.synclyBound === '1') return;
+
+    btn.dataset.synclyBound = '1';
+    btn.textContent = __synclyDesktopView ? 'Phone' : 'Desktop';
+    btn.classList.toggle('active', __synclyDesktopView);
+
+    btn.addEventListener('click', (event)=>{
+      event.preventDefault();
+      event.stopPropagation();
+
+      try{ playClickSound(); }catch(_){}
+
+      __synclyDesktopView = !__synclyDesktopView;
+      __synclyApplyDisplayModeSmooth();
+    }, true);
+  }
+
+  __synclyBindDisplayButton();
+  window.addEventListener('load', __synclyBindDisplayButton);
+
 })();
 </script>
 </body>
