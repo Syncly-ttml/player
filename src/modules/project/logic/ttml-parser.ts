@@ -493,77 +493,18 @@ export function parseLyric(ttmlText: string): TTMLLyric {
 			}
 		}
 
-		const wordNodes = Array.from(lineEl.childNodes);
-
-		function getTimedWordFromNode(node: ChildNode | undefined) {
-			if (!node || node.nodeType !== Node.ELEMENT_NODE) return null;
-			const el = node as Element;
-			if (localName(el) !== "span" || getAttr(el, "role")) return null;
-			const begin = getAttr(el, "begin");
-			const end = getAttr(el, "end");
-			if (!begin || !end) return null;
-			return {
-				startTime: parseTimespan(begin),
-				endTime: parseTimespan(end),
-			};
-		}
-
-		function findNextTimedWord(fromIndex: number) {
-			for (let i = fromIndex; i < wordNodes.length; i++) {
-				const node = wordNodes[i];
-				if (
-					node.nodeType === Node.TEXT_NODE &&
-					(node.textContent ?? "").trim().length === 0
-				) {
-					continue;
-				}
-				return getTimedWordFromNode(node);
-			}
-			return null;
-		}
-
-		for (let wordNodeIndex = 0; wordNodeIndex < wordNodes.length; wordNodeIndex++) {
-			const wordNode = wordNodes[wordNodeIndex];
+		for (const wordNode of lineEl.childNodes) {
 			if (wordNode.nodeType === Node.TEXT_NODE) {
 				const word = wordNode.textContent ?? "";
-				const isFormattingWhitespace = word.trim().length === 0;
-
-				if (isFormattingWhitespace) {
-					// Pretty-printed Apple TTML contains indentation/newlines between
-					// timed spans. Preserve that whitespace for round-tripping, but do
-					// not turn it into a 0–0 ms word: AMLL may then calculate every
-					// line as starting at zero and jump to the final line.
-					const previousWord = [...line.words]
-						.reverse()
-						.find((candidate) => candidate.word.trim().length > 0);
-					const nextWord = findNextTimedWord(wordNodeIndex + 1);
-					const whitespaceStart =
-						previousWord?.endTime ?? nextWord?.startTime ?? line.startTime;
-					const whitespaceEnd = Math.max(
-						whitespaceStart,
-						nextWord?.startTime ?? previousWord?.endTime ?? line.endTime,
-					);
-
-					line.words.push({
-						id: uid(),
-						word,
-						startTime: whitespaceStart,
-						endTime: whitespaceEnd,
-						obscene: false,
-						emptyBeat: 0,
-						romanWord: "",
-					});
-				} else {
-					line.words.push({
-						id: uid(),
-						word,
-						startTime: line.startTime,
-						endTime: line.endTime,
-						obscene: false,
-						emptyBeat: 0,
-						romanWord: "",
-					});
-				}
+				line.words.push({
+					id: uid(),
+					word: word,
+					startTime: word.trim().length >  ? line.startTime : ,
+					endTime: word.trim().length >  ? line.endTime : ,
+					obscene: false,
+					emptyBeat: 0,
+					romanWord: "",
+				});
 			} else if (wordNode.nodeType === Node.ELEMENT_NODE) {
 				const wordEl = wordNode as Element;
 				const role = wordEl.getAttribute("ttm:role");
