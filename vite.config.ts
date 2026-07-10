@@ -150,44 +150,24 @@ export default defineConfig({
 		sourcemap: true,
 	},
 	resolve: {
-		alias: AMLL_LOCAL_EXISTS
-			? [
-					// For local development, use the neighbouring AMLL source repository.
-					{
-						find: /^@applemusic-like-lyrics\/core$/,
-						replacement: resolve(
+		alias: Object.assign(
+			{
+				$: resolve(__dirname, "src"),
+			},
+			AMLL_LOCAL_EXISTS
+				? {
+						// for development, use the local copy of the AMLL library
+						"@applemusic-like-lyrics/core": resolve(
 							__dirname,
 							"../applemusic-like-lyrics/packages/core/src",
 						),
-					},
-					{
-						find: /^@applemusic-like-lyrics\/react$/,
-						replacement: resolve(
+						"@applemusic-like-lyrics/react": resolve(
 							__dirname,
 							"../applemusic-like-lyrics/packages/react/src",
 						),
-					},
-					{ find: "$", replacement: resolve(__dirname, "src") },
-				]
-			: [
-					// GitHub Pages uses the vendored core build below. Its word
-					// entrance-animation anticipation is patched from 400 ms to 0 ms.
-					{
-						find: /^@applemusic-like-lyrics\/core$/,
-						replacement: resolve(
-							__dirname,
-							"vendor/applemusic-like-lyrics-core/dist/amll-core.mjs",
-						),
-					},
-					{
-						find: /^@applemusic-like-lyrics\/core\/style\.css$/,
-						replacement: resolve(
-							__dirname,
-							"vendor/applemusic-like-lyrics-core/dist/style.css",
-						),
-					},
-					{ find: "$", replacement: resolve(__dirname, "src") },
-				],
+					}
+				: {},
+		) as Record<string, string>,
 	},
 	worker: {
 		format: "es",

@@ -1,0 +1,16 @@
+КАК ЗАМЕНИТЬ СУЩЕСТВУЮЩИЙ РЕПОЗИТОРИЙ ЧЕРЕЗ GITHUB DESKTOP
+
+1. Распакуйте этот ZIP в отдельную папку.
+2. Откройте GitHub Desktop.
+3. Если репозиторий ещё не клонирован: File -> Clone repository -> URL -> выберите Syncly-ttml/player -> Clone.
+4. В GitHub Desktop выберите Repository -> Show in Explorer.
+5. В открывшейся папке удалите все ВИДИМЫЕ старые файлы и папки. Скрытую папку .git не удаляйте.
+6. Откройте распакованную папку этого ZIP.
+7. Скопируйте ВСЁ её содержимое в папку репозитория. В корне должны оказаться .github, src, src-tauri, public, vendor, package.json и остальные файлы.
+8. Вернитесь в GitHub Desktop. В поле Summary напишите: Replace project with fixed build
+9. Нажмите Commit to main.
+10. Нажмите Push origin.
+11. На GitHub откройте Settings -> Pages -> Source и выберите GitHub Actions.
+12. Откройте вкладку Actions и дождитесь зелёной галочки у Deploy website to GitHub Pages.
+
+НЕ загружайте исходный ZIP прямо в репозиторий и НЕ публикуйте ветку напрямую через Deploy from a branch.
